@@ -1,1 +1,52 @@
-
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#233d32">
+  <title>Читай слоги и стреляй по танкам</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="app">
+    <div id="field" aria-label="Игровое поле">
+      <canvas id="scene" aria-label="Трёхмерные танки на зелёном поле"></canvas>
+      <div id="labels"></div>
+      <div id="spark"></div>
+      <div id="reticle" aria-hidden="true"><i></i><b></b></div>
+      <div id="hud" hidden>
+        <button id="menu-button" class="hud-button">← <span>В меню</span></button>
+        <div id="progress" role="status" aria-live="polite">Прочитано: 0 / 0</div>
+      </div>
+    </div>
+    <button id="sound" class="hud-button sound" aria-label="Выключить звук" aria-pressed="true"><span id="sound-icon">♪</span><span id="sound-text">Звук вкл.</span></button>
+    <section id="menu" aria-labelledby="title">
+      <div class="menu-card">
+        <div class="eyebrow"><span class="little-mark">✦</span> МАЛЕНЬКАЯ ПОБЕДА В ЧТЕНИИ</div>
+        <h1 id="title">Читай слоги<br> <span>и стреляй по танкам</span></h1>
+        <p class="intro">Выберите буквы — и отправляйтесь на поле.</p>
+        <div class="letter-heading"><h2>Согласные</h2><span>Можно выбрать до 15 букв</span></div>
+        <div id="consonants" class="letters" aria-label="Согласные"></div>
+        <div class="letter-heading vowel-heading"><h2>Гласные</h2></div>
+        <div id="vowels" class="letters" aria-label="Гласные"></div>
+        <div class="selection-line"><span id="selected-count" aria-live="polite">Выбрано: <b>0 / 15</b></span><button id="reset" class="text-button">Сбросить выбор</button></div>
+        <h2 class="mode-heading">Какие слоги читаем?</h2>
+        <div class="modes" role="radiogroup" aria-label="Тип слогов">
+          <button role="radio" aria-checked="true" data-mode="open" class="mode selected"><span>Открытые</span><small>МА · СО · ЛУ</small></button>
+          <button role="radio" aria-checked="false" data-mode="closed" class="mode"><span>Закрытые</span><small>АМ · ОС · УЛ</small></button>
+          <button role="radio" aria-checked="false" data-mode="mixed" class="mode"><span>Смешанные</span><small>МА · АМ · СО</small></button>
+        </div>
+        <div class="start-line"><div id="syllable-count" aria-live="polite">Выберите согласную<br>и гласную</div><button id="start" class="primary" disabled>На поле <span>→</span></button></div>
+        <p class="menu-hint">Прочитай слог и нажми на танк. Торопиться не нужно.</p>
+      </div>
+      <div class="scene-caption"><span class="caption-line"></span><span>ЧИТАЕМ. ЦЕЛИМСЯ. ПОПАДАЕМ.</span></div>
+    </section>
+    <section id="finish" class="overlay" hidden aria-labelledby="finish-title">
+      <div class="finish-card"><div class="medal" aria-hidden="true">✦</div><p class="eyebrow">ЕЩЁ ОДНА МАЛЕНЬКАЯ ПОБЕДА</p><h2 id="finish-title">Отличная работа!</h2><p>Все слоги прочитаны!</p><div id="finish-count"></div><button id="again" class="primary">Играть ещё <span>↻</span></button><button id="finish-menu" class="text-button">В меню</button></div>
+    </section>
+    <div id="error" class="overlay" hidden><div class="finish-card"><h2>Не удалось открыть 3D-поле</h2><p>Попробуйте обновить страницу или открыть игру в другом браузере с поддержкой WebGL.</p><button class="primary" onclick="location.reload()">Обновить</button></div></div>
+    <noscript>Для игры нужно включить JavaScript в браузере.</noscript>
+  </main>
+  <script type="module" src="game.js"></script>
+</body>
+</html>
