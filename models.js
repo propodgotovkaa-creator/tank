@@ -58,6 +58,8 @@ export function makeTank(variant=0){
  cylinder(turret,edge,1.55,.30,0,.14,.30,'x');
  cylinder(turret,steel,1.10+barrelLength,.30,0,.12,.22,'x');
  cylinder(turret,black,1.22+barrelLength,.30,0,.076,.013,'x');
+ const muzzle=new T.Object3D();muzzle.position.set(1.26+barrelLength,.30,0);turret.add(muzzle);
+ const flash=new T.Mesh(new T.SphereGeometry(.20,8,6),new T.MeshBasicMaterial({color:0xffedb1,transparent:true,opacity:.9}));flash.scale.set(1.6,.7,.7);muzzle.add(flash);flash.visible=false;
  if(variant===1||variant===3)box(turret,paint,1.10+barrelLength,.30,0,.32,.19,.21);
  const antenna=cylinder(turret,steel,-.62,1.10,-.54,.014,1.15);antenna.rotation.z=.08;
  box(turret,darkPaint,-.82,.48,.51,.22,.19,.31);
@@ -66,7 +68,7 @@ export function makeTank(variant=0){
  function animate(dt,speed,time){phase+=dt*speed*2;const L=4*1.58+2*Math.PI*.47;for(const belt of belts){for(let i=0;i<54;i++){const p=beltPoint(i*L/54+phase);temp.position.set(p.x,p.y+.55,belt.z);temp.rotation.set(0,0,p.angle);temp.scale.set(1,1,1);temp.updateMatrix();belt.mesh.setMatrixAt(i,temp.matrix)}belt.mesh.instanceMatrix.needsUpdate=true;}for(const w of wheels)w.rotation.z=-phase/.4;body.position.y=Math.sin(time*5+variant)*.014*Math.min(Math.abs(speed),1);body.rotation.z=Math.sin(time*4+variant)*.008*Math.min(Math.abs(speed),1);}
  function fade(opacity){for(const m of mats){m.transparent=opacity<1;m.opacity=opacity;m.depthWrite=opacity>.1}root.visible=opacity>.01;}
  animate(0,0,0);root.userData.variant=variant;
- return {root,animate,fade,dispose(){root.traverse(o=>{if(o.isMesh&&o.geometry&&!Object.values(geo).includes(o.geometry))o.geometry.dispose()});mats.forEach(m=>m.dispose());}};
+ return {root,animate,fade,muzzle,attackFlash(on){flash.visible=on;turret.position.x=on?-.09:.02;},dispose(){root.traverse(o=>{if(o.isMesh&&o.geometry&&!Object.values(geo).includes(o.geometry))o.geometry.dispose()});mats.forEach(m=>m.dispose());flash.material.dispose();}};
 }
 export function makeGun(){
  const root=new T.Group(),black=material(0x47534f,.42,.45),edge=material(0x65736a,.55,.38),green=material(0x455640,.3,.67),rubber=material(0x1c2422,.16,.83);

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {makeSyllables,Round,CONSONANTS,VOWELS} from '../logic.js';
+import {makeSyllables,Round,CONSONANTS,VOWELS,Counterattack,replacementEntry} from '../logic.js';
 test('Точные наборы из ТЗ: 6 открытых, 6 закрытых, 12 смешанных',()=>{
  const s=new Set('МСЛАО');
  assert.deepEqual(new Set(makeSyllables(s,'open')),new Set(['МА','МО','СА','СО','ЛА','ЛО']));
@@ -26,4 +26,13 @@ test('Раунд выдаёт каждый слог один раз, держи�
 test('Без попадания танк остаётся в раунде; один или два слога не создают лишних танков',()=>{
  const r=new Round(['МА','МО']);const ids=r.slots.filter(Boolean).map(x=>x.id);r.tick(1000);assert.deepEqual(r.slots.filter(Boolean).map(x=>x.id),ids);assert.equal(r.read,0);assert.equal(r.complete,false);
  const single=new Round(['МА','МА']);assert.equal(single.total,1);assert.equal(single.slots.filter(Boolean).length,1);
+});
+test('Новый танк въезжает с противоположной стороны и смотрит внутрь поля',()=>{
+ assert.deepEqual(replacementEntry(1),{direction:-1,x:1.14});assert.deepEqual(replacementEntry(-1),{direction:1,x:-.14});
+});
+test('Ответный выстрел: ожидание, разворот, ровно один выстрел и новый период ожидания',()=>{
+ const a=new Counterattack(12);assert.equal(a.tick(11.9).started,false);assert.equal(a.tick(.2).started,true);assert.equal(a.tick(.9).fire,false);assert.equal(a.tick(.11).fire,true);assert.equal(a.tick(.1).fire,false);assert.equal(a.tick(1.4).finished,true);assert.equal(a.active,false);assert.equal(a.tick(11).started,false);
+});
+test('Попадание во время разворота отменяет ответный выстрел',()=>{
+ const a=new Counterattack(12);a.tick(12);a.tick(.6);assert.equal(a.tick(.5,false).fire,false);assert.equal(a.active,false);assert.equal(a.tick(1).fire,false);
 });
